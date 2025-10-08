@@ -1,0 +1,28 @@
+replicaCount: 2
+
+image:
+  repository: abhinshyam/kanbanboard   # change to your Docker Hub username/repo
+  tag: "0.01"                           # version tag you push from Jenkins
+  pullPolicy: IfNotPresent
+
+service:
+  type: LoadBalancer
+  port: 80
+  targetPort: 80
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: kanban.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+resources: {}
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
