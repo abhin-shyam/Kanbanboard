@@ -7,8 +7,8 @@ image:
 
 service:
   type: LoadBalancer
-  port: 9091
-  targetPort: 9090
+  port: 9090
+  targetPort: 30080
 
 ingress:
   enabled: false
