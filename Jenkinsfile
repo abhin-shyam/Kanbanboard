@@ -6,7 +6,6 @@ pipeline {
         IMAGE_NAME = 'kanbanboard'
         VERSION = "0.01-${BUILD_NUMBER}"
         SONAR_PROJECT_KEY = 'kanbanboard'
-        SONARQUBE_TOKEN = credentials('SonarQube')  // Define this in Jenkins Global Tool Config
     }
 
     stages {
@@ -18,26 +17,27 @@ pipeline {
 
         stage('SonarQube Scan') {
             steps {
-        script {
-          // This name must match the *Server name* under "Configure System" > "SonarQube servers"
-          withSonarQubeEnv('SonarQube') {
-            sh '''
-              sonar-scanner \
-                -Dsonar.projectKey="$SONAR_PROJECT_KEY" \
-                -Dsonar.sources=. \
-                -Dsonar.projectVersion="$VERSION" \
-                -Dsonar.sourceEncoding=UTF-8
-            '''
-              }
-            }
-
+                script {
+                    // Must match the *Name* under "Manage Jenkins" -> "Configure System" -> "SonarQube Servers"
+                    withSonarQubeEnv('SonarQube') {
+                        sh """
+                            sonar-scanner \
+                                -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+                                -Dsonar.sources=. \
+                                -Dsonar.projectVersion=${VERSION} \
+                                -Dsonar.host.url=${SONAR_HOST_URL} \
+                                -Dsonar.login=${SONAR_AUTH_TOKEN} \
+                                -Dsonar.sourceEncoding=UTF-8
+                        """
+                    }
+                }
             }
         }
 
         stage('Wait for Quality Gate') {
             steps {
                 timeout(time: 2, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true  // Fail pipeline if quality gate fails
+                    waitForQualityGate abortPipeline: true
                 }
             }
         }
@@ -45,27 +45,27 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 echo "🔧 Building Docker image..."
-                sh '''
+                sh """
                     docker build -t $DOCKERHUB_USER/$IMAGE_NAME:$VERSION .
-                '''
+                """
             }
         }
 
         stage('Login to DockerHub') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
-                    sh '''
+                    sh """
                         echo "$PASS" | docker login -u "$USER" --password-stdin
-                    '''
+                    """
                 }
             }
         }
 
         stage('Push to DockerHub') {
             steps {
-                sh '''
+                sh """
                     docker push $DOCKERHUB_USER/$IMAGE_NAME:$VERSION
-                '''
+                """
             }
         }
 
