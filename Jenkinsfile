@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'kube-node' }
+    agent { label 'deploy-node' }
 
     environment {
         DOCKERHUB_USER = 'abhinshyam'          // your DockerHub username
