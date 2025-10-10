@@ -6,6 +6,9 @@ pipeline {
         IMAGE_NAME = 'kanbanboard'
         VERSION = "0.01-${BUILD_NUMBER}"
         SONAR_PROJECT_KEY = 'kanbanboard'
+        SONARQUBE_TOKEN = credentials('SonarQube')
+        SONAR_HOST_URL = 'http://107.20.53.25:9000'
+        
     }
 
     stages {
@@ -26,8 +29,7 @@ pipeline {
                                 -Dsonar.sources=. \
                                 -Dsonar.projectVersion=${VERSION} \
                                 -Dsonar.host.url=${SONAR_HOST_URL} \
-                                -Dsonar.login=${SONAR_AUTH_TOKEN} \
-                                -Dsonar.sourceEncoding=UTF-8
+                                -Dsonar.login=$SONARQUBE_TOKEN \
                         """
                     }
                 }
