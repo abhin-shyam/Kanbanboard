@@ -6,7 +6,7 @@ pipeline {
         IMAGE_NAME = 'kanbanboard'
         VERSION = "0.01-${BUILD_NUMBER}"
         SONAR_PROJECT_KEY = 'kanbanboard'
-        SONAR_SCANNER_HOME = tool 'SonarScanner'  // Define this in Jenkins Global Tool Config
+        SONAR_SCANNER_HOME = tool 'SonarQube'  // Define this in Jenkins Global Tool Config
     }
 
     stages {
