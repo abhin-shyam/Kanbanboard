@@ -18,17 +18,19 @@ pipeline {
 
         stage('SonarQube Scan') {
             steps {
-                script {
-                    withSonarQubeEnv('SonarQube') {   // SonarQube server name from Jenkins config
-                        sh """
-                        ${SONAR_SCANNER_HOME}/bin/sonar-scanner \
-                          -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
-                          -Dsonar.sources=. \
-                          -Dsonar.host.url=$SONAR_HOST_URL \
-                          -Dsonar.login=$SONAR_AUTH_TOKEN
-                        """
-                    }
-                }
+        script {
+          // This name must match the *Server name* under "Configure System" > "SonarQube servers"
+          withSonarQubeEnv('SonarQube') {
+            sh '''
+              sonar-scanner \
+                -Dsonar.projectKey="$SONAR_PROJECT_KEY" \
+                -Dsonar.sources=. \
+                -Dsonar.projectVersion="$VERSION" \
+                -Dsonar.sourceEncoding=UTF-8
+            '''
+              }
+            }
+
             }
         }
 
