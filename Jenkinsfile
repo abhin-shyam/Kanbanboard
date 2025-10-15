@@ -1,12 +1,14 @@
 pipeline {
-    agent { label 'deploy-node' }  // Ensure this agent has Docker + Node + sonar-scanner installed
+    agent { label 'built-in'}  // Ensure this agent has Docker + Node + sonar-scanner installed
 
     environment {
         DOCKERHUB_USER = 'abhinshyam'
         IMAGE_NAME = 'kanbanboard'
         VERSION = "0.01-${BUILD_NUMBER}"
         SONAR_PROJECT_KEY = 'kanbanboard'
-        SONAR_SCANNER_HOME = tool 'SonarScanner'  // Define this in Jenkins Global Tool Config
+        SONARQUBE_TOKEN = credentials('SonarQube')
+        SONAR_HOST_URL = 'http://3.94.110.58:9000/'
+        
     }
 
     stages {
@@ -19,13 +21,15 @@ pipeline {
         stage('SonarQube Scan') {
             steps {
                 script {
-                    withSonarQubeEnv('SonarQube') {   // SonarQube server name from Jenkins config
+                    // Must match the *Name* under "Manage Jenkins" -> "Configure System" -> "SonarQube Servers"
+                    withSonarQubeEnv('SonarQube-Server') {
                         sh """
-                        ${SONAR_SCANNER_HOME}/bin/sonar-scanner \
-                          -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
-                          -Dsonar.sources=. \
-                          -Dsonar.host.url=$SONAR_HOST_URL \
-                          -Dsonar.login=$SONAR_AUTH_TOKEN
+                            sonar-scanner \
+                                -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+                                -Dsonar.sources=. \
+                                -Dsonar.projectVersion=${VERSION} \
+                                -Dsonar.host.url=${SONAR_HOST_URL} \
+                                -Dsonar.login=$SONARQUBE_TOKEN \
                         """
                     }
                 }
