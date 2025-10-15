@@ -7,7 +7,7 @@ pipeline {
         VERSION = "0.01-${BUILD_NUMBER}"
         SONAR_PROJECT_KEY = 'kanbanboard'
         SONARQUBE_TOKEN = credentials('SonarQube')
-        SONAR_HOST_URL = 'http://107.20.53.25:9000'
+        SONAR_HOST_URL = 'http://98.89.44.119:9000'
         
     }
 
@@ -67,7 +67,7 @@ pipeline {
         stage('Trigger Deployment Pipeline') {
             steps {
                 echo "✅ Image pushed successfully! Triggering deployment..."
-                build job: 'kanban-deploy-pipeline1', parameters: [
+                build job: 'kanban-deploy-pipeline', parameters: [
                     string(name: 'IMAGE_TAG', value: "${VERSION}")
                 ]
             }
