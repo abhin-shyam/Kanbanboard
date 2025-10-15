@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'deploy-node' }  // Ensure this agent has Docker + Node + sonar-scanner installed
+    agent { label 'built-in' }  // Ensure this agent has Docker + Node + sonar-scanner installed
 
     environment {
         DOCKERHUB_USER = 'abhinshyam'
