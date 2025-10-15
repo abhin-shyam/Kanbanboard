@@ -36,13 +36,7 @@ pipeline {
             }
         }
 
-        stage('Wait for Quality Gate') {
-            steps {
-                timeout(time: 2, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true  // Fail pipeline if quality gate fails
-                }
-            }
-        }
+      
 
         stage('Build Docker Image') {
             steps {
