@@ -22,7 +22,7 @@ pipeline {
             steps {
                 script {
                     // Must match the *Name* under "Manage Jenkins" -> "Configure System" -> "SonarQube Servers"
-                    withSonarQubeEnv('SonarQube') {
+                    withSonarQubeEnv('SonarQube-Server') {
                         sh """
                             sonar-scanner \
                                 -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
