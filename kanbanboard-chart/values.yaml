@@ -1,30 +1,29 @@
 replicaCount: 2
-
+ 
 image:
-  # Use the unprivileged NGINX base in your Dockerfile build output
-  # i.e., your final image should listen on 8080
-  repository: abhinshyam/kanbanboard
-  tag: "0.01-5"
+  repository: abhinshyam/kanbanboard   # change to your Docker Hub username/repo
+  tag: "0.01"                           # version tag you push from Jenkins
   pullPolicy: IfNotPresent
-
+ 
 service:
-  type: ClusterIP
-  port: 80           # external Service port (client-facing)
-  targetPort: 8080   # container listens on 8080 (nginx-unprivileged)
-
-route:
-  enabled: true
-  # If you leave host empty, OpenShift may generate one automatically (based on the default router config)
-  host: "kanban.example.com"
+  type: NodePort
+  port: 80
+  targetPort: 80
+  nodePort: 30090
+ 
+ingress:
+  enabled: false
+  className: ""
   annotations: {}
-  tls:
-    enabled: false
-    # termination: edge|reencrypt|passthrough (used only if tls.enabled=true)
-    termination: edge
-    # Redirect|Allow|None (only for edge/reencrypt)
-    insecureEdgeTerminationPolicy: Redirect
-
+  hosts:
+    - host: kanban.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+ 
 resources: {}
+ 
 nodeSelector: {}
 tolerations: []
 affinity: {}
