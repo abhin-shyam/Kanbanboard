@@ -4,7 +4,7 @@ image:
   # Use the unprivileged NGINX base in your Dockerfile build output
   # i.e., your final image should listen on 8080
   repository: abhinshyam/kanbanboard
-  tag: ""
+  tag: "0.01-5"
   pullPolicy: IfNotPresent
 
 service:
