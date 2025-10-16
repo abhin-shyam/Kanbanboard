@@ -8,7 +8,7 @@ pipeline {
     environment {
         DOCKERHUB_USER = 'abhinshyam'
         IMAGE_NAME = 'kanbanboard'
-        NAMESPACE = 'default'
+        NAMESPACE = 'abhin-shyam-dev'
         HELM_RELEASE = 'kanbanboard'
         CHART_PATH = './kanbanboard-chart' // path to your Helm chart in repo
     }
