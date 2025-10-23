@@ -16,7 +16,7 @@ pipeline {
     stages {
         stage('Checkout Helm Chart') {
             steps {
-                git branch: 'Release',
+                git branch: 'test',
                  url: 'https://github.com/abhin-shyam/Kanbanboard.git'
             }
     }
