@@ -1,16 +1,14 @@
 pipeline {
-    agent { label 'deploy-node' }
- 
-    parameters {
-        string(name: 'IMAGE_TAG', defaultValue: 'latest', description: 'Docker image tag to deploy')
-    }
- 
+    agent { label 'built-in'}  // Ensure this agent has Docker + Node + sonar-scanner installed
+
     environment {
         DOCKERHUB_USER = 'abhinshyam'
         IMAGE_NAME = 'kanbanboard'
-        NAMESPACE = 'abhin-shyam-dev'
-        HELM_RELEASE = 'kanbanboard'
-        CHART_PATH = './kanbanboard-chart' // path to your Helm chart in repo
+        VERSION = "0.01-${BUILD_NUMBER}"
+        SONAR_PROJECT_KEY = 'kanbanboard'
+        SONARQUBE_TOKEN = credentials('SonarQube')
+        SONAR_HOST_URL = 'http://13.217.101.78:9000/'
+        
     }
  
     stages {
