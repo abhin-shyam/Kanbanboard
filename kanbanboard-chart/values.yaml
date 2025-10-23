@@ -10,7 +10,7 @@ image:
 service:
   type: ClusterIP
   port: 80           # external Service port (client-facing)
-  targetPort: 8080   # container listens on 8080 (nginx-unprivileged)
+  targetPort: 80   # container listens on 8080 (nginx-unprivileged)
 
 route:
   enabled: true
