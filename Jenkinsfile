@@ -1,82 +1,46 @@
 pipeline {
-    agent { label 'built-in' }  // Ensure this agent has Docker + Node + sonar-scanner installed
-
+    agent { label 'deploy-node' }
+ 
+    parameters {
+        string(name: 'IMAGE_TAG', defaultValue: 'latest', description: 'Docker image tag to deploy')
+    }
+ 
     environment {
         DOCKERHUB_USER = 'abhinshyam'
         IMAGE_NAME = 'kanbanboard'
-        VERSION = "0.01-${BUILD_NUMBER}"
-        SONAR_PROJECT_KEY = 'kanbanboard'
-        SONARQUBE_TOKEN = credentials('SonarQube')
-        SONAR_HOST_URL = 'http://54.227.104.17:9000/'
-        
+        NAMESPACE = 'abhin-shyam-dev'
+        HELM_RELEASE = 'kanbanboard'
+        CHART_PATH = './kanbanboard-chart' // path to your Helm chart in repo
     }
-
+ 
     stages {
-        stage('Checkout') {
+        stage('Checkout Helm Chart') {
             steps {
-                checkout scm
+                git branch: 'Release',
+                 url: 'https://github.com/abhin-shyam/Kanbanboard.git'
             }
-        }
-
-        stage('SonarQube Scan') {
-            steps {
-                script {
-                    // Must match the *Name* under "Manage Jenkins" -> "Configure System" -> "SonarQube Servers"
-                    withSonarQubeEnv('SonarQube-Server') {
-                        sh """
-                            sonar-scanner \
-                                -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
-                                -Dsonar.sources=. \
-                                -Dsonar.projectVersion=${VERSION} \
-                                -Dsonar.host.url=${SONAR_HOST_URL} \
-                                -Dsonar.login=$SONARQUBE_TOKEN \
-                        """
-                    }
-                }
-            }
-        }
-
-
-        stage('Build Docker Image') {
-            steps {
-                echo "🔧 Building Docker image..."
-                sh """
-                    docker build -t $DOCKERHUB_USER/$IMAGE_NAME:$VERSION .
-                """
-            }
-        }
-
-        stage('Login to DockerHub') {
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
-                    sh """
-                        echo "$PASS" | docker login -u "$USER" --password-stdin
-                    """
-                }
-            }
-        }
-
-        stage('Push to DockerHub') {
-            steps {
-                sh """
-                    docker push $DOCKERHUB_USER/$IMAGE_NAME:$VERSION
-                """
-            }
-        }
-
-        stage('Trigger Deployment Pipeline') {
-            steps {
-                echo "✅ Image pushed successfully! Triggering deployment..."
-                build job: 'kanban-deploy-pipeline', parameters: [
-                    string(name: 'IMAGE_TAG', value: "${VERSION}")
-                ]
-            }
-        }
     }
 
-    post {
-        failure {
-            echo "❌ Build failed. Deployment not triggered."
+ 
+        stage('Deploy to Minikube') {
+            steps {
+                echo "🚀 Deploying $DOCKERHUB_USER/$IMAGE_NAME:$IMAGE_TAG to Minikube"
+                sh '''
+                helm upgrade --install $HELM_RELEASE $CHART_PATH \
+                --namespace $NAMESPACE \
+                --set image.repository=$DOCKERHUB_USER/$IMAGE_NAME \
+                --set image.tag=$IMAGE_TAG
+            '''
         }
+    }
+ 
+        stage('Verify Deployment') {
+            steps {
+                sh '''
+                kubectl get pods -n $NAMESPACE
+                kubectl get svc -n $NAMESPACE
+            '''
+            }
+        }    
     }
 }
