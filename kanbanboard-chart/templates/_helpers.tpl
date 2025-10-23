@@ -1,6 +1,10 @@
+{{- /*
+Common helper templates for kanbanboard
+*/ -}}
+
 {{- define "kanbanboard.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
-{{- end }}
+{{- end -}}
 
 {{- define "kanbanboard.fullname" -}}
 {{- if .Values.fullnameOverride -}}
@@ -8,12 +12,17 @@
 {{- else -}}
 {{- printf "%s-%s" .Release.Name (include "kanbanboard.name" .) | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
-{{- end }}
+{{- end -}}
 
+{{- define "kanbanboard.chart" -}}
+{{- printf "%s-%s" .Chart.Name .Chart.Version -}}
+{{- end -}}
+
+{{- /* Standard labels (ensure string types via quote) */ -}}
 {{- define "kanbanboard.labels" -}}
-helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
 app.kubernetes.io/name: {{ include "kanbanboard.name" . }}
-app.kubernetes.io/instance: {{ .Release.Name }}
-app.kubernetes.io/version: {{ .Chart.AppVersion }}
-app.kubernetes.io/managed-by: {{ .Release.Service }}
-{{- end }}
+helm.sh/chart: {{ include "kanbanboard.chart" . | quote }}
+app.kubernetes.io/instance: {{ .Release.Name | quote }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+{{- end -}}

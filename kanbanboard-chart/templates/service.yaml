@@ -8,8 +8,8 @@ spec:
   type: {{ .Values.service.type }}
   selector:
     app.kubernetes.io/name: {{ include "kanbanboard.name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
   ports:
     - name: http
-      port: {{ .Values.service.port }}
-      targetPort: {{ .Values.service.targetPort }}
+      port: {{ .Values.service.port }}          # 80
+      targetPort: {{ .Values.service.targetPort }}  # "http" (maps to 8080)
