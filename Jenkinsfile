@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'built-in'}  // Ensure this agent has Docker + Node + sonar-scanner installed
+    agent { label 'deploy-node'}  // Ensure this agent has Docker + Node + sonar-scanner installed
 
     parameters {
         string(name: 'IMAGE_TAG', defaultValue: 'openshift', description: 'Docker image tag to deploy')
