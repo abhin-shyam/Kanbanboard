@@ -1,14 +1,16 @@
 pipeline {
     agent { label 'built-in'}  // Ensure this agent has Docker + Node + sonar-scanner installed
 
+    parameters {
+        string(name: 'IMAGE_TAG', defaultValue: 'openshift', description: 'Docker image tag to deploy')
+    }
+ 
     environment {
         DOCKERHUB_USER = 'abhinshyam'
         IMAGE_NAME = 'kanbanboard'
-        VERSION = "0.01-${BUILD_NUMBER}"
-        SONAR_PROJECT_KEY = 'kanbanboard'
-        SONARQUBE_TOKEN = credentials('SonarQube')
-        SONAR_HOST_URL = 'http://13.217.101.78:9000/'
-        
+        NAMESPACE = 'abhin-shyam-dev'
+        HELM_RELEASE = 'kanbanboard'
+        CHART_PATH = './kanbanboard-chart' // path to your Helm chart in repo
     }
  
     stages {
@@ -22,7 +24,7 @@ pipeline {
  
         stage('Deploy to Minikube') {
             steps {
-                echo "🚀 Deploying $DOCKERHUB_USER/$IMAGE_NAME:$IMAGE_TAG to Minikube"
+                echo "🚀 Deploying $DOCKERHUB_USER/$IMAGE_NAME:$IMAGE_TAG to Openshift"
                 sh '''
                 helm upgrade --install $HELM_RELEASE $CHART_PATH \
                 --namespace $NAMESPACE \
