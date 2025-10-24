@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKERHUB_USER = 'abhinshyam'
         IMAGE_NAME = 'kanbanboard'
-        VERSION = "openshift-${BUILD_NUMBER}"
+        VERSION = "openshift"
         SONAR_PROJECT_KEY = 'kanbanboard'
         SONARQUBE_TOKEN = credentials('SonarQube')
         SONAR_HOST_URL = 'http://3.81.151.108:9000/'
