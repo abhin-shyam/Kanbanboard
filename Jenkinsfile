@@ -67,7 +67,7 @@ pipeline {
         stage('Trigger Deployment Pipeline') {
             steps {
                 echo "✅ Image pushed successfully! Triggering deployment..."
-                build job: 'kanban-deploy-pipeline', parameters: [
+                build job: 'kanban-deploy-minikube-cd', parameters: [
                     string(name: 'IMAGE_TAG', value: "${VERSION}")
                 ]
             }
