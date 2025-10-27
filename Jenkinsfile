@@ -22,7 +22,7 @@ pipeline {
     }
 
  
-        stage('Deploy to Minikube') {
+        stage('Deploy to OpenShift') {
             steps {
                 echo "🚀 Deploying $DOCKERHUB_USER/$IMAGE_NAME:$IMAGE_TAG to Openshift"
                 sh '''
