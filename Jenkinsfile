@@ -7,7 +7,7 @@ pipeline {
         VERSION = "openshift"
         SONAR_PROJECT_KEY = 'kanbanboard'
         SONARQUBE_TOKEN = credentials('SonarQube')
-        SONAR_HOST_URL = 'http://3.81.151.108:9000/'
+        SONAR_HOST_URL = 'http://172.29.117.161:9000'
         
     }
 
