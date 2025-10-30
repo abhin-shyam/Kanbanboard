@@ -5,7 +5,10 @@ pipeline {
         DOCKERHUB_USER = 'abhinshyam'
         IMAGE_NAME = 'kanbanboard'
         VERSION = "0.01-${BUILD_NUMBER}"
-        SONAR_PROJECT_KEY = 'kanbanboard'        
+        SONAR_PROJECT_KEY = 'kanbanboard'
+        SONARQUBE_TOKEN = credentials('SonarQube')
+        SONAR_HOST_URL = 'http://172.29.117.161:9000/'
+        
     }
 
     stages {
